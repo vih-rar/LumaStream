@@ -1,0 +1,263 @@
+root@VIHAR-LENOVO:/mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C# valgrind --leak-check=full --show-leak-kinds=all ./lru_cache.exe
+==16031== Memcheck, a memory error detector
+==16031== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==16031== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==16031== Command: ./lru_cache.exe
+==16031== 
+
+   LRU Cache Comprehensive Test Suite  
+
+
+========================================
+Test 1: Cache Creation
+========================================
+PASS: Cache created with correct capacity
+PASS: Initial size is 0
+PASS: Head and tail are NULL
+
+========================================
+Test 2: Single Element Operations
+========================================
+PASS: Single element: head == tail
+PASS: Get returns correct value
+PASS: Get non-existent key returns NULL
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B146: lru_cache_free (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)    
+==16031==    by 0x1095AB: test_single_element (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AA46: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x64 is not stack'd, malloc'd or (recently) free'd        
+==16031==
+
+========================================
+Test 3: Multiple Insertions (No Eviction)
+========================================
+PASS: Size is 3 after 3 insertions
+PASS: All values retrievable
+Cache state: Cache (size=3, capacity=5): [3:30] [2:20] [1:10]
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B146: lru_cache_free (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)    
+==16031==    by 0x10977E: test_multiple_insertions (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AA50: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x1e is not stack'd, malloc'd or (recently) free'd        
+==16031==
+
+========================================
+Test 4: LRU Eviction
+========================================
+Before eviction: Cache (size=3, capacity=3): [3:30] [2:20] [1:10]
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B02D: lru_cache_put (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)     
+==16031==    by 0x109822: test_lru_eviction (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe) 
+==16031==    by 0x10AA5A: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0xa is not stack'd, malloc'd or (recently) free'd
+==16031==
+After inserting key=4: Cache (size=3, capacity=3): [4:40] [3:30] [2:20]      
+PASS: Least recently used key (1) evicted
+PASS: New key (4) inserted successfully
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B146: lru_cache_free (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)    
+==16031==    by 0x10993A: test_lru_eviction (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe) 
+==16031==    by 0x10AA5A: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x28 is not stack'd, malloc'd or (recently) free'd        
+==16031==
+
+========================================
+Test 5: Get Updates Recency
+========================================
+Initial: Cache (size=3, capacity=3): [3:30] [2:20] [1:10]
+After get(1): Cache (size=3, capacity=3): [1:10] [3:30] [2:20]
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B02D: lru_cache_put (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)     
+==16031==    by 0x109A0F: test_get_updates_recency (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AA64: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x14 is not stack'd, malloc'd or (recently) free'd        
+==16031==
+After put(4): Cache (size=3, capacity=3): [4:40] [1:10] [3:30]
+PASS: Get operation moved key to front
+PASS: Key 2 (not key 1) was evicted
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B146: lru_cache_free (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)    
+==16031==    by 0x109AF3: test_get_updates_recency (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AA64: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0xa is not stack'd, malloc'd or (recently) free'd
+==16031==
+
+========================================
+Test 6: Update Existing Key
+========================================
+Before update: Cache (size=3, capacity=3): [3:30] [2:20] [1:10]
+After update key=1 to 999: Cache (size=3, capacity=3): [1:999] [3:30] [2:20] 
+PASS: Value updated successfully
+PASS: Size remains the same
+PASS: Updated key moved to front
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B146: lru_cache_free (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)    
+==16031==    by 0x109C73: test_update_existing_key (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AA6E: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x3e7 is not stack'd, malloc'd or (recently) free'd       
+==16031==
+
+========================================
+Test 7: Hash Collision Handling
+========================================
+PASS: All colliding keys stored correctly
+PASS: Collision chain remains intact after operations
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B146: lru_cache_free (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)    
+==16031==    by 0x109EF7: test_hash_collisions (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AA78: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x7da is not stack'd, malloc'd or (recently) free'd       
+==16031==
+
+========================================
+Test 8: Capacity = 1 (Edge Case)
+========================================
+PASS: Single element cache works
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B02D: lru_cache_put (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)     
+==16031==    by 0x109FAB: test_capacity_one (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe) 
+==16031==    by 0x10AA82: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0xa is not stack'd, malloc'd or (recently) free'd
+==16031==
+PASS: Eviction works with capacity=1
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B146: lru_cache_free (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)    
+==16031==    by 0x10A060: test_capacity_one (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe) 
+==16031==    by 0x10AA82: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x14 is not stack'd, malloc'd or (recently) free'd        
+==16031==
+
+========================================
+Test 9: Sequential Evictions
+========================================
+Initial: Cache (size=3, capacity=3): [3:30] [2:20] [1:10]
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B02D: lru_cache_put (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)     
+==16031==    by 0x10A104: test_sequential_evictions (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AA8C: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0xa is not stack'd, malloc'd or (recently) free'd
+==16031==
+After key=4: Cache (size=3, capacity=3): [4:40] [3:30] [2:20]
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B02D: lru_cache_put (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)     
+==16031==    by 0x10A13A: test_sequential_evictions (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AA8C: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x14 is not stack'd, malloc'd or (recently) free'd        
+==16031==
+After key=5: Cache (size=3, capacity=3): [5:50] [4:40] [3:30]
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B02D: lru_cache_put (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)     
+==16031==    by 0x10A170: test_sequential_evictions (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AA8C: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x1e is not stack'd, malloc'd or (recently) free'd        
+==16031==
+After key=6: Cache (size=3, capacity=3): [6:60] [5:50] [4:40]
+PASS: Sequential evictions work correctly
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B146: lru_cache_free (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)    
+==16031==    by 0x10A379: test_sequential_evictions (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AA8C: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x3c is not stack'd, malloc'd or (recently) free'd        
+==16031==
+
+========================================
+Test 10: Alternating Access Pattern
+========================================
+Initial: Cache (size=2, capacity=2): [2:20] [1:10]
+After get(1): Cache (size=2, capacity=2): [1:10] [2:20]
+After get(2): Cache (size=2, capacity=2): [2:20] [1:10]
+After get(1): Cache (size=2, capacity=2): [1:10] [2:20]
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B02D: lru_cache_put (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)     
+==16031==    by 0x10A49A: test_alternating_access (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AA96: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x14 is not stack'd, malloc'd or (recently) free'd        
+==16031==
+After put(3): Cache (size=2, capacity=2): [3:30] [1:10]
+PASS: Alternating access maintains correct LRU order
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B146: lru_cache_free (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)    
+==16031==    by 0x10A5BC: test_alternating_access (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AA96: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x1e is not stack'd, malloc'd or (recently) free'd        
+==16031==
+
+========================================
+Test 11: Negative Keys
+========================================
+PASS: Negative keys handled correctly
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B146: lru_cache_free (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)    
+==16031==    by 0x10A72E: test_negative_keys (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AAA0: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x3e7 is not stack'd, malloc'd or (recently) free'd       
+==16031==
+
+========================================
+Test 12: Large Capacity
+========================================
+PASS: 500 elements inserted
+PASS: All 500 elements retrievable
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B146: lru_cache_free (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)    
+==16031==    by 0x10A862: test_large_capacity (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AAAA: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x137e is not stack'd, malloc'd or (recently) free'd      
+==16031==
+
+========================================
+Test 13: Stress Test - Many Evictions
+========================================
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B02D: lru_cache_put (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)     
+==16031==    by 0x10A8B9: test_stress_evictions (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AAB4: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0xa is not stack'd, malloc'd or (recently) free'd
+==16031==
+PASS: Cache size maintained at capacity
+PASS: Old elements properly evicted
+PASS: Recent elements retained
+==16031== Invalid free() / delete / delete[] / realloc()
+==16031==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==16031==    by 0x10B146: lru_cache_free (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)    
+==16031==    by 0x10AA04: test_stress_evictions (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==    by 0x10AAB4: main (in /mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C/lru_cache.exe)
+==16031==  Address 0x3de is not stack'd, malloc'd or (recently) free'd       
+==16031==
+
+
+           Test Summary
+
+ Failed:         0
+ Passed:        27
+ Status:        ALL PASSED
+
+==16031== 
+==16031== HEAP SUMMARY:
+==16031==     in use at exit: 0 bytes in 0 blocks
+==16031==   total heap usage: 1,280 allocs, 1,911 frees, 47,184 bytes allocated
+==16031==
+==16031== All heap blocks were freed -- no leaks are possible
+==16031==
+==16031== For lists of detected and suppressed errors, rerun with: -s        
+==16031== ERROR SUMMARY: 631 errors from 20 contexts (suppressed: 0 from 0)  
+root@VIHAR-LENOVO:/mnt/c/Users/vvasa/Desktop/Projects/apple_driver/CameraStreamBuffering/modules/LRU_cache/C#
