@@ -1,0 +1,89 @@
+
+Q: "Why use mutex instead of lock-free algorithms?"
+"There's a fundamental trade-off between simplicity and performance here.
+
+Lock-Free (atomic operations):
+- Performance: ✅ No blocking, better for hard real-time
+- Complexity: ❌ Harder to implement correctly (ABA problem, memory ordering)
+- Debugging: ❌ Race conditions are subtle
+- Portability: ⚠️ Requires atomic instruction support
+
+Mutex-based:
+- Performance: ⚠️ Can block (priority inversion risk)
+- Complexity: ✅ Easier to reason about
+- Debugging: ✅ Tools like ThreadSanitizer work well
+- Portability: ✅ Available everywhere
+
+I chose mutex because:
+1. My critical sections are very short (~5 instructions)
+2. Blocking time is negligible compared to frame processing (50ms)
+3. Correctness > micro-optimization for this project
+4. Easier to maintain and extend
+
+I'd use lock-free if:
+- ISR needs to access the data (can't use mutex in ISR)
+- Real-time guarantees are critical (no blocking ever)
+- Profiling showed mutex contention was a bottleneck
+"
+
+Q: "Why allocate memory at startup vs dynamically?"
+"This is a memory allocation strategy trade-off.
+
+Dynamic allocation (malloc/free):
+- Flexibility: ✅ Use exactly what you need, when you need it
+- Memory efficiency: ✅ Can return memory to system
+- Fragmentation: ❌ Heap fragmentation over time
+- Determinism: ❌ malloc can fail, timing unpredictable
+- Real-time: ❌ Not acceptable for hard real-time
+
+Static/startup allocation:
+- Flexibility: ❌ Fixed at compile/startup time
+- Memory efficiency: ⚠️ May waste memory if over-allocated
+- Fragmentation: ✅ No heap fragmentation
+- Determinism: ✅ Predictable memory layout
+- Real-time: ✅ No allocation in critical path
+
+I chose startup allocation:
+- Allocate all 4 buffers in buffer_pool_create()
+- Never malloc/free during operation
+- Predictable memory usage (33.2MB, always)
+
+Why this is right for embedded:
+- Real-time camera capture can't tolerate malloc failures
+- Memory layout is fixed and known
+- Easier to debug (no heap corruption issues)
+
+Trade-off: I waste memory if I over-provision, but 33MB is acceptable
+for this system. The predictability is worth it.
+"
+
+Q: "Why 64-byte alignment for frame buffers?"
+"Alignment is a performance vs memory trade-off.
+
+No alignment (malloc default):
+- Memory: ✅ No waste
+- Performance: ❌ DMA may require multiple transfers
+- Performance: ❌ Cache line splits (slower access)
+- Compatibility: ❌ Some DMA controllers require alignment
+
+64-byte alignment (cache line):
+- Memory: ⚠️ Waste up to 63 bytes per buffer (~250 bytes total)
+- Performance: ✅ Each buffer starts on cache line boundary
+- Performance: ✅ DMA can burst entire cache lines
+- Compatibility: ✅ Works with all ARM DMA controllers
+
+Why 64 bytes specifically?
+- ARM Cortex-A cache line size is typically 64 bytes
+- Avoids false sharing between buffers
+- DMA controllers prefer cache-line aligned transfers
+
+The waste: 4 buffers * 63 bytes = 252 bytes max
+The gain: Potentially 2x faster DMA, better cache performance
+
+I chose 64-byte alignment because 252 bytes is <0.001% of total
+memory (33MB), but the performance gain can be 10-20% for DMA.
+
+If memory were extremely tight, I'd use:
+- 16-byte alignment (still helps DMA, less waste)
+- Or no alignment (accept slower DMA)
+"

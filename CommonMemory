@@ -1,0 +1,35 @@
+## Quick Reference: Common Calculations
+
+### **Frame Buffer Sizes (at 1080p)**
+
+| Format       | Bytes/Pixel | Size   | Use Case |
+|--------------|-------------|--------|----------|
+| Grayscale    | 1           | 2 MB   | B&W cameras, ML input |
+| Bayer 10-bit | 1.25        | 2.6 MB | Raw sensor data |
+| YUV 4:2:0    | 1.5         | 3 MB   | Video encoding (h.264) |
+| RGB565       | 2           | 4 MB   | Embedded displays |
+| YUV 4:2:2    | 2           | 4 MB   | Professional video |
+| RGB888       | 3           | 6 MB   | Full quality processing |
+| RGBA         | 4           | 8 MB   | With transparency |
+
+### **Common Resolutions**
+
+| Resolution  | Pixels    | Multiplier vs 1080p |
+|-------------|-----------|---------------------|
+| VGA         | 640×480   | 0.14× (307K) |
+| HD          | 1280×720  | 0.44× (921K) |
+| FHD (1080p) | 1920×1080 | 1.00× (2.07M) |
+| QHD         | 2560×1440 | 1.78× (3.68M) |
+| 4K UHD      | 3840×2160 | 4.00× (8.29M) |
+| 8K UHD      | 7680×4320 | 16.00× (33.2M) |
+
+### **Memory Hierarchy (for context)**
+
+| Type | Size | Speed | Use |
+|------|------|-------|-----|
+| CPU Registers | 32-256 bytes | 1 cycle | Active computation |
+| L1 Cache | 32-64 KB | 3-4 cycles | Hot code/data |
+| L2 Cache | 256KB-1MB | 10-20 cycles | Recently used |
+| L3 Cache | 2-32 MB | 30-70 cycles | Shared data |
+| Main RAM | GB range | 100+ cycles | Working set |
+| Flash/SSD | GB-TB | 100,000+ cycles | Storage |
