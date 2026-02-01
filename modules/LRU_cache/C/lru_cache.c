@@ -1,18 +1,17 @@
 #include "lru_cache.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 
 // TODO: Implement hash function
 // Hint: Use modulo operator with HASH_SIZE, handle negative keys
-int hash(int key)
+uint32_t hash(uint32_t key)
 {
     return abs( key )%HASH_SIZE;
 }
 
 // TODO: Create a new node
 // Hint: Allocate memory, initialize key/value, set prev/next to NULL
-Node* create_node(int key, void* value) 
+Node* create_node(uint32_t key, void* value) 
 {
     Node* new_node = (Node*)malloc(sizeof(Node));
     new_node->key = key;
@@ -26,7 +25,7 @@ Node* create_node(int key, void* value)
 // TODO: Create LRU Cache
 // Hint: Allocate cache, set capacity/size, initialize head/tail to NULL
 // Initialize all hash_table entries to NULL
-lru_cache_t* lru_cache_create(int capacity) 
+lru_cache_t* lru_cache_create(uint32_t capacity) 
 {
     lru_cache_t* cache = (lru_cache_t*)malloc(sizeof( lru_cache_t ));
     cache->capacity = capacity;
@@ -34,7 +33,7 @@ lru_cache_t* lru_cache_create(int capacity)
     cache->head = NULL;
     cache->tail = NULL;
     
-    for( int i = 0; i<HASH_SIZE; i++ )
+    for( uint32_t i = 0; i<HASH_SIZE; i++ )
     {
         cache->hash_table[i] = NULL;
     }
@@ -96,9 +95,9 @@ void move_to_front(lru_cache_t* cache, Node* node)
 
 // TODO: Insert into hash table
 // Hint: Create HashNode, compute hash index, insert at head of chain
-void hash_insert(lru_cache_t* cache, int key, Node* node)
+void hash_insert(lru_cache_t* cache, uint32_t key, Node* node)
 {
-    int index = hash( key );
+    uint32_t index = hash( key );
     
     HashNode* hashnode = (HashNode*)malloc(sizeof(HashNode));
     hashnode->key = key;
@@ -111,9 +110,9 @@ void hash_insert(lru_cache_t* cache, int key, Node* node)
 // TODO: Get node from hash table
 // Hint: Compute hash index, traverse chain to find matching key
 // Return NULL if not found
-Node* hash_get(lru_cache_t* cache, int key)
+Node* hash_get(lru_cache_t* cache, uint32_t key)
 {
-    int index = hash( key );
+    uint32_t index = hash( key );
     HashNode* hashnode = cache->hash_table[index];
 
     while( hashnode )
@@ -130,9 +129,9 @@ Node* hash_get(lru_cache_t* cache, int key)
 // TODO: Delete from hash table
 // Hint: Compute hash index, traverse chain to find key
 // Update prev->next pointer, handle head of chain case, free HashNode
-void hash_delete(lru_cache_t* cache, int key) 
+void hash_delete(lru_cache_t* cache, uint32_t key) 
 {
-    int index = hash( key );
+    uint32_t index = hash( key );
     HashNode* hashnode = cache->hash_table[index];
     HashNode* prev = NULL;
 
@@ -159,7 +158,7 @@ void hash_delete(lru_cache_t* cache, int key)
 // TODO: Get value from cache
 // Hint: Use hash_get to find node, return -1 if not found
 // Move node to front (mark as recently used), return value
-void* lru_cache_get(lru_cache_t* cache, int key)
+void* lru_cache_get(lru_cache_t* cache, uint32_t key)
 {
    Node* node = hash_get( cache, key );
    if( node == NULL )
@@ -176,7 +175,7 @@ void* lru_cache_get(lru_cache_t* cache, int key)
 // If new: create node, check if cache is full
 //   If full: delete tail (LRU), remove from hash, free node, decrement size
 //   Add new node to front, insert into hash, increment size
-void lru_cache_put(lru_cache_t* cache, int key, void* value)
+void lru_cache_put(lru_cache_t* cache, uint32_t key, void* value)
 {
    Node* node = hash_get(cache, key);
    if (node)
@@ -211,7 +210,7 @@ void lru_cache_print(lru_cache_t* cache)
     printf("Cache (size=%d, capacity=%d): ", cache->size, cache->capacity);
     Node* curr = cache->head;
     while (curr) {
-        printf("[%d:%d] ", curr->key, (int)(intptr_t)(curr->value));
+        printf("[%d:%d] ", curr->key, (uint32_t)(intptr_t)(curr->value));
         curr = curr->next;
     }
     printf("\n");
@@ -239,7 +238,7 @@ void lru_cache_free(lru_cache_t* cache)
         current = next;
     }
     
-    for( int i = 0; i<HASH_SIZE; i++ )
+    for( uint32_t i = 0; i<HASH_SIZE; i++ )
     {
         HashNode* hashnode = cache->hash_table[i];
         while( hashnode )

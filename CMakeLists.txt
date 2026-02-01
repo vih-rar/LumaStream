@@ -4,9 +4,18 @@ project(LumaStream C)
 # Use C11 for atomics and better thread support
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+# Enable compile commands for analysis tools
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Find Threading library (pthreads)
 find_package(Threads REQUIRED)
+
+# Optimization flags based on build type
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -g -Wall -Wextra")
+elseif(CMAKE_BUILD_TYPE MATCHES Release)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -DNDEBUG")
+endif()
 
 # --- Define Sub-Modules as Static Libraries ---
 
@@ -38,3 +47,9 @@ target_link_libraries(LumaStream
     lru_cache 
     Threads::Threads
 )
+
+# Print build info
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "C Compiler: ${CMAKE_C_COMPILER}")
+message(STATUS "C Flags: ${CMAKE_C_FLAGS}")
+message(STATUS "System Processor: ${CMAKE_SYSTEM_PROCESSOR}")

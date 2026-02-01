@@ -13,7 +13,9 @@
 // --- Constants & Configuration ---
 #define FRAME_WIDTH       1920
 #define FRAME_HEIGHT      1080
-#define BUFFER_COUNT      4      // Typical for triple-buffering + 1 spare
+#define BYTE_PER_PIXEL    3
+#define FRAME_SIZE        FRAME_WIDTH*FRAME_HEIGHT*BYTE_PER_PIXEL
+#define BUFFER_COUNT      6      // Typical for triple-buffering + 1 spare
 #define ALIGNMENT         64     // Cache-line alignment for Apple Silicon
 #define METADATA_CACHE_SZ 10     // Max lens profiles in LRU
 volatile bool running = false;
@@ -28,6 +30,11 @@ typedef enum POOL_STATES
 typedef struct {
     uint32_t lens_id;
     float gain_factor;
+    char lens_name[64];
+    float distortion_k[6];
+    float vignette_params[4];
+    float chromatic_aberration[3];
+    uint32_t calibration_date;
 } LensProfile_t;
 
 // --- Buffer Metadata ---
@@ -95,7 +102,7 @@ void simulate_sensor_capture(FrameBuffer_t* buf) {
     uint8_t* data = (uint8_t*)buf->virt_addr;
     uint8_t frame_seed = (uint8_t)(buf->id % 255);
 
-    if( buf->size != FRAME_HEIGHT*FRAME_WIDTH )
+    if( buf->size != FRAME_SIZE )
     {
         printf("[ERROR] Invalid buffer size passed to simulate_sensor_capture\n");
         return;
@@ -150,7 +157,7 @@ void camera_init(CameraDevice_t* dev)
         return;
     }
 
-    size_t frame_bytes = FRAME_WIDTH * FRAME_HEIGHT; // Assuming 8-bit/YUV/etc.
+    size_t frame_bytes = FRAME_SIZE;
 
     for(int i = 0; i < BUFFER_COUNT; i++) {
         // 1. Allocate the struct itself
@@ -179,7 +186,6 @@ void camera_init(CameraDevice_t* dev)
     dev->sensor_dropped_frames = 0;
     dev->processed_count = 0;
     mtx_init( &dev->lock, mtx_plain );
-
 }
 
 void camera_deinit(CameraDevice_t* dev)
